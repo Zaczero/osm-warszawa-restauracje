@@ -4,16 +4,31 @@ from typing import Sequence
 import hjson
 from pyproj import Transformer
 from rapidfuzz import fuzz, process, utils
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 from config import UM_GUESS_CATEGORY, UM_VALID_CATEGORIES
 from um_poi import UmPoi
-from utils import beautify_name
+from utils import get_http_client, nice_hash
 
 _GUESS_CATEGORY_CHOICES = tuple(chain(UM_GUESS_CATEGORY, UM_VALID_CATEGORIES))
 _PROJ_TRANSFORMER = Transformer.from_crs('epsg:2178', 'wgs84')
 
 
-# curl -X POST -d 'request=getfoi&version=1.0&bbox=0:0:10000000:10000000&width=760&height=1190&theme=dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO_A&cachefoi=yes' https://mapa.um.warszawa.pl/mapviewer/foi
+@retry(wait=wait_exponential(), stop=stop_after_attempt(5))
+def _fetch_data(theme: str) -> dict:
+    with get_http_client() as http:
+        r = http.post('https://mapa.um.warszawa.pl/mapviewer/foi', data={
+            'request': 'getfoi',
+            'version': '1.0',
+            'bbox': '0:0:10000000:10000000',
+            'width': '760',
+            'height': '1190',
+            'theme': theme,
+            'cachefoi': 'yes',
+        })
+        r.raise_for_status()
+
+    return hjson.loads(r.text)
 
 
 def _parse_details(details: str) -> tuple[str, str, str]:
@@ -44,12 +59,13 @@ def _guess_category(name: str) -> str:
 
 
 def um_fetch_restaurants() -> Sequence[UmPoi]:
-    with open('test.txt') as f:
-        data = hjson.load(f)
+    data = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO')
+    data_a = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO_A')
+    foiarray = chain(data['foiarray'], data_a['foiarray'])
 
-    pois = []
+    pois: dict[str, UmPoi] = {}
 
-    for p in data['foiarray']:
+    for p in foiarray:
         lat, lng = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
         category, name, address = _parse_details(p['name'])
 
@@ -57,13 +73,15 @@ def um_fetch_restaurants() -> Sequence[UmPoi]:
             category = _guess_category(name)
             print(f'🧩 Guessed category {category!r} for {name!r}')
 
-        pois.append(UmPoi(
-            id=p['id'],
+        p_id = nice_hash((name, address))
+
+        pois[p_id] = UmPoi(
+            id=p_id,
+            id_um=p['id'],
             category=category,
             name=name,
             address=address,
             lat=lat,
-            lng=lng,
-        ))
+            lng=lng)
 
-    return tuple(pois)
+    return tuple(pois.values())

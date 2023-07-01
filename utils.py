@@ -1,12 +1,15 @@
+import pickle
 import re
 import time
+from base64 import urlsafe_b64encode
 from contextlib import contextmanager
+from hashlib import blake2b
 from math import radians
 from typing import Generator
 
 import httpx
 
-from config import UNICODE_QUOTES, USER_AGENT
+from config import CACHE_DIR, UNICODE_QUOTES, USER_AGENT
 
 
 @contextmanager
@@ -25,6 +28,34 @@ def print_run_time(message: str | list) -> Generator[None, None, None]:
             message = message[0]
 
         print(f'[⏱️] {message} took {elapsed_time:.3f}s')
+
+
+def nice_hash(o: object) -> str:
+    return urlsafe_b64encode(blake2b(
+        repr(o).encode(),
+        digest_size=8,
+        usedforsecurity=False
+    ).digest()).decode().rstrip('=')
+
+
+def file_cache(ttl: float):
+    def wrapper(func):
+        def wrapped(*args, **kwargs):
+            hash_args = nice_hash((args, kwargs))
+            cache_file = CACHE_DIR / f'{func.__name__}.{hash_args}.pkl'
+
+            if cache_file.is_file() and (time.time() - cache_file.stat().st_mtime) < ttl:
+                with cache_file.open('rb') as f:
+                    return pickle.load(f)
+
+            result = func(*args, **kwargs)
+
+            with cache_file.open('wb') as f:
+                pickle.dump(result, f)
+
+            return result
+        return wrapped
+    return wrapper
 
 
 def radians_tuple(latLng: tuple[float, float]) -> tuple[float, float]:

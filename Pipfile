@@ -1,17 +1,19 @@
 [[source]]
+name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi"
 
 [packages]
-tenacity = "*"
-scipy = "*"
+hjson = "*"
 httpx = "*"
+pyproj = "*"
+scikit-learn = "*"
+scipy = "*"
+tenacity = "*"
 tinydb = "*"
 xmltodict = "*"
-pyproj = "*"
-hjson = "*"
-scikit-learn = "*"
+rapidfuzz = "*"
+openai = "*"
 
 [dev-packages]
 autopep8 = "*"

@@ -7,7 +7,8 @@ from rapidfuzz import fuzz, process
 from sklearn.neighbors import BallTree
 
 from config import (EARTH_RADIUS, OSM_SEARCH_RADIUS_0, OSM_SEARCH_RADIUS_1,
-                    OSM_SEARCH_RADIUS_NONAME, OSM_SEARCH_SCORE_THRESHOLD)
+                    OSM_SEARCH_RADIUS_NONAME, OSM_SEARCH_SCORE_THRESHOLD_1,
+                    OSM_SEARCH_SCORE_THRESHOLD_2)
 from osm_poi import OsmPoi
 from overpass import Overpass
 from um_poi import UmPoi
@@ -66,7 +67,10 @@ class OsmSearch:
         self.pois = tuple(self.pois)
         self.tree = BallTree(tuple(radians_tuple((p.lat, p.lng)) for p in self.pois), metric='haversine')
 
-    def search(self, um_pois: Sequence[UmPoi]) -> Sequence[OsmPoi | None]:
+    def search(self, um_pois: Sequence[UmPoi], pass_: int) -> Sequence[OsmPoi | None]:
+        assert 1 <= pass_ <= 2
+        search_score_threshold = OSM_SEARCH_SCORE_THRESHOLD_1 if pass_ == 1 else OSM_SEARCH_SCORE_THRESHOLD_2
+
         indices, distances = self.tree.query_radius(
             tuple(radians_tuple((p.lat, p.lng)) for p in um_pois),
             r=OSM_SEARCH_RADIUS_0 / EARTH_RADIUS,
@@ -83,7 +87,7 @@ class OsmSearch:
             um_poi = um_pois[i]
             um_poi_name = _normalize_name(um_poi.name)
             um_poi_noname = not um_poi_name
-            um_poi_osm_tags = um_poi.get_osm_tags()
+            um_poi_osm_tags = um_poi.get_osm_category_tags()
 
             osm_pois = tuple(self.pois[index] for index in i_indices)
             osm_pois_names = tuple(_normalize_name(p.tags.get('name', '')) for p in osm_pois)
@@ -116,7 +120,7 @@ class OsmSearch:
             best_match_score = -best_match[0]
             best_match_osm_poi = best_match[2]
 
-            if best_match_score > OSM_SEARCH_SCORE_THRESHOLD:
+            if best_match_score > search_score_threshold:
                 result[i] = best_match_osm_poi
             else:
                 print(f'✗ [{best_match_score:.3f}] {um_poi_name!r} ({um_poi.category!r}) ↔ {best_match_osm_poi.tags.get("name")!r}')
