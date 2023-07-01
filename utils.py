@@ -99,6 +99,10 @@ def beautify_name(name: str) -> str:
     name = re.sub(r'^[^\w"\']+', '', name)
     name = re.sub(r'[^\w"\']+$', '', name)
 
+    # fix inconsistent quotes
+    if name.count('"') == 1 and name.count("'") == 1:
+        name = name.replace("'", '"')
+
     # strip quotes
     while name and not name[0].isalnum() and not name[-1].isalnum():
         name = name[1:-1]

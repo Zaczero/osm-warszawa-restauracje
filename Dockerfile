@@ -13,7 +13,8 @@ RUN nix-channel --add https://channels.nixos.org/nixos-23.05 nixpkgs && \
     nix-channel --update && \
     mkdir --parents $NIX_TRANSFER_DIR && \
     nix-env --profile $NIX_PROFILE --install --attr buildInputs --file shell.nix && \
-    cp --archive $(nix-store --query --requisites $NIX_PROFILE) $NIX_TRANSFER_DIR
+    cp --archive $(nix-store --query --requisites $NIX_PROFILE) $NIX_TRANSFER_DIR && \
+    echo $(nix-build '<nixpkgs>' -A stdenv.cc.cc.lib)/lib > /stdlib.txt
 
 
 FROM alpine
@@ -23,6 +24,10 @@ ARG NIX_TRANSFER_DIR
 
 COPY --from=nix $NIX_TRANSFER_DIR /nix/store
 COPY --from=nix $NIX_PROFILE /usr/local
+
+COPY --from=nix /stdlib.txt /stdlib.txt
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 WORKDIR /app
 
@@ -53,4 +58,5 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 VOLUME [ "/app/cache", "/app/data" ]
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["/entrypoint.sh", "python", "main.py"]
+CMD []

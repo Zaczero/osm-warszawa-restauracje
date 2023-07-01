@@ -42,7 +42,7 @@ EARTH_RADIUS = 6371000
 LIMIT_CHANGES_PER_CHANGESET = 20
 
 UM_CATEGORY_TAGS = {
-    '': {},
+    '': {'amenity': 'restaurant'},
     'bar': {'amenity': 'bar'},
     'bar kawowy': {'amenity': 'cafe'},
     'bar gastronomiczny': {'amenity': 'restaurant'},
