@@ -48,7 +48,7 @@ def _guess_category(name: str) -> str:
                               scorer=fuzz.partial_ratio,
                               processor=utils.default_process,
                               limit=1,
-                              score_cutoff=90)
+                              score_cutoff=85)
 
     if not matches:
         return ''
