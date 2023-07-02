@@ -50,6 +50,7 @@ UM_CATEGORY_TAGS = {
     'bar uniwersalny': {'amenity': 'bar'},
     'kawiarnia': {'amenity': 'cafe'},
     'klub': {'amenity': 'bar'},
+    'piekarnia': {'shop': 'bakery'},
     'piwiarnia': {'shop': 'alcohol'},
     'pizzeria': {'amenity': 'restaurant', 'cuisine': 'pizza'},
     'pub': {'amenity': 'pub'},
