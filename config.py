@@ -50,12 +50,12 @@ UM_CATEGORY_TAGS = {
     'bar uniwersalny': {'amenity': 'bar'},
     'kawiarnia': {'amenity': 'cafe'},
     'klub': {'amenity': 'bar'},
-    'piwiarnia': {'amenity': 'bar', 'beer': 'yes'},
+    'piwiarnia': {'shop': 'alcohol'},
     'pizzeria': {'amenity': 'restaurant', 'cuisine': 'pizza'},
     'pub': {'amenity': 'pub'},
     'restauracja': {'amenity': 'restaurant'},
     'sezonowy ogródek': {'amenity': 'restaurant'},
-    'winiarnia': {'amenity': 'bar', 'wine': 'yes'},
+    'winiarnia': {'shop': 'wine'},
     'zakład gastronomiczny': {'amenity': 'restaurant'},
 }
 
