@@ -1,5 +1,9 @@
-.PHONY: update
+.PHONY: update version
+
+IMAGE_NAME=docker.monicz.pl/osm-warszawa-restauracje
 
 update:
-	docker run --privileged --rm tonistiigi/binfmt --install all
-	docker buildx build --platform linux/amd64 -t docker.monicz.pl/osm-warszawa-restauracje --push .
+	docker buildx build -t $(IMAGE_NAME) --push .
+
+version:
+	sed -i -r "s|VERSION = '([0-9.]+)'|VERSION = '\1.$$(date +%y%m%d)'|g" config.py
