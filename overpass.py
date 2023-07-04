@@ -8,10 +8,8 @@ def build_pois_query(timeout: int) -> str:
     return (
         f'[out:json][timeout:{timeout}];'
         'relation(id:336075);'  # https://www.openstreetmap.org/relation/336075
-        'map_to_area->.r;'
-        'nwr[amenity](area.r);'
-        'out tags center qt;'
-        'nwr[shop](area.r);'
+        'map_to_area;'
+        'nwr[!highway][name](area);'
         'out tags center qt;'
     )
 

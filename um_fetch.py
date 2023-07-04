@@ -6,7 +6,7 @@ from pyproj import Transformer
 from rapidfuzz import fuzz, process, utils
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from config import UM_GUESS_CATEGORY, UM_VALID_CATEGORIES
+from config import UM_CATEGORY_TAGS, UM_GUESS_CATEGORY, UM_VALID_CATEGORIES
 from um_poi import UmPoi
 from utils import get_http_client, nice_hash
 
@@ -47,13 +47,16 @@ def _guess_category(name: str) -> str:
     matches = process.extract(name, _GUESS_CATEGORY_CHOICES,
                               scorer=fuzz.partial_ratio,
                               processor=utils.default_process,
-                              limit=1,
+                              limit=3,
                               score_cutoff=85)
 
     if not matches:
         return ''
 
-    match = matches[0][0]
+    if len(matches) == 1:
+        match = matches[0][0]
+    else:
+        match = max(matches, key=lambda m: len(UM_CATEGORY_TAGS[UM_GUESS_CATEGORY.get(m[0], m[0])]))[0]
 
     return UM_GUESS_CATEGORY.get(match, match)
 
@@ -67,11 +70,15 @@ def um_fetch_restaurants() -> Sequence[UmPoi]:
 
     for p in foiarray:
         lat, lng = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
-        category, name, address = _parse_details(p['name'])
+        um_category, name, address = _parse_details(p['name'])
 
-        if not category:
-            category = _guess_category(name)
+        category = _guess_category(name)
+
+        if category:
             print(f'🧩 Guessed category {category!r} for {name!r}')
+        if not category:
+            category = um_category
+            print(f'🏱 Using UM category {category!r} for {name!r}')
 
         p_id = nice_hash((name, address))
 

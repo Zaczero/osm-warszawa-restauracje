@@ -1,6 +1,5 @@
 import re
 from collections import defaultdict
-from pprint import pprint
 from typing import Sequence
 
 from rapidfuzz import fuzz, process

@@ -77,6 +77,7 @@ UM_VALID_CATEGORIES = tuple(k for k in UM_CATEGORY_TAGS if k)
 
 UM_GUESS_CATEGORY = {
     'bistro': 'restauracja',
+    'burger': 'burgerownia',
     'cafe': 'kawiarnia',
     'caffe': 'kawiarnia',
     'ciastkarnia': 'cukiernia',
@@ -90,11 +91,13 @@ UM_GUESS_CATEGORY = {
     'piwny': 'piwiarnia',
     'pizza': 'pizzeria',
     'restaurant': 'restauracja',
-    'sushi': 'restauracja',
+    'ristorante': 'restauracja',
     'tawerna': 'restauracja',
-    'winiarnia': 'winiarnia',
     'zajazd': 'restauracja',
 }
+
+assert not set(UM_CATEGORY_TAGS).intersection(UM_GUESS_CATEGORY), \
+    'UM_CATEGORY_TAGS and UM_GUESS_CATEGORY must be disjoint'
 
 DEFAULT_POI_TAGS = {
     'source': 'mapa.um.warszawa.pl',

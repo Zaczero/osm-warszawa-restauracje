@@ -32,6 +32,9 @@ def main():
     for um_poi, osm_match in zip(um_pois, osm_matches):
         um_poi_name = beautify_name(um_poi.name)
 
+        if not um_poi_name:
+            continue
+
         if osm_match is None:
             missing_pois.append(um_poi)
             print(f'[1/2] ❌ {um_poi_name!r} ({um_poi.category!r})')
@@ -48,6 +51,9 @@ def main():
     for um_poi, osm_match in zip(um_pois, osm_matches):
         um_poi_name = beautify_name(um_poi.name)
 
+        if not um_poi_name:
+            continue
+
         if osm_match is None:
             missing_pois.append(um_poi)
             print(f'[2/2] ❌ {um_poi_name!r} ({um_poi.category!r})')
@@ -56,7 +62,7 @@ def main():
             print(f'[2/2] ✅ {um_poi_name!r} ({um_poi.category!r}) ↔ {osm_match_name!r}')
 
     missing_pois = missing_pois[:LIMIT_CHANGES_PER_CHANGESET]
-    print(f'🛟 Limiting to {LIMIT_CHANGES_PER_CHANGESET} POIs for safety')
+    print(f'🛟 Limiting to {LIMIT_CHANGES_PER_CHANGESET} POIs')
     print(f'📍 Total POIs to be added: {len(missing_pois)}')
 
     if not missing_pois:
