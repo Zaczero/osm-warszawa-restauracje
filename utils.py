@@ -81,10 +81,6 @@ def beautify_name(name: str) -> str:
     if not name:
         return ''
 
-    # treat lowercase names as invalid
-    if name.lower() == name:
-        return ''
-
     # capitalize first letter in all uppercase words
     for m in re.finditer(r'[^\d\W]+', name):
         word = m.group()
