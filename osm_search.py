@@ -119,7 +119,7 @@ class OsmSearch:
             best_match_score = -best_match[0]
             best_match_osm_poi = best_match[2]
 
-            if best_match_score > search_score_threshold:
+            if best_match_score >= search_score_threshold:
                 result[i] = best_match_osm_poi
             else:
                 print(f'✗ [{best_match_score:.3f}] {um_poi_name!r} ({um_poi.category!r}) ↔ {best_match_osm_poi.tags.get("name")!r}')
