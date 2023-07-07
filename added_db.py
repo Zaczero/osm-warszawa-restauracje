@@ -15,5 +15,8 @@ def filter_added(pois: Iterable[UmPoi]) -> Sequence[UmPoi]:
     return tuple(filter(lambda poi: not _is_added(poi), pois))
 
 
-def mark_added(pois: Iterable[UmPoi]) -> Sequence[int]:
-    return DB.insert_multiple(poi._asdict() for poi in pois)
+def mark_added(pois: Iterable[UmPoi], reason: str = '') -> Sequence[int]:
+    if reason:
+        return DB.insert_multiple(poi._asdict() | {'reason': reason} for poi in pois)
+    else:
+        return DB.insert_multiple(poi._asdict() for poi in pois)

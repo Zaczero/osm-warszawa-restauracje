@@ -41,6 +41,7 @@ def main():
         else:
             osm_match_name = beautify_name(osm_match.tags.get('name'))
             print(f'[1/2] ✅ {um_poi_name!r} ({um_poi.category!r}) ↔ {osm_match_name!r}')
+            mark_added((um_poi,), reason='exists_1')
 
     um_pois = ai_name_convert(missing_pois)
     missing_pois.clear()
@@ -60,6 +61,7 @@ def main():
         else:
             osm_match_name = beautify_name(osm_match.tags.get('name'))
             print(f'[2/2] ✅ {um_poi_name!r} ({um_poi.category!r}) ↔ {osm_match_name!r}')
+            mark_added((um_poi,), reason='exists_2')
 
     missing_pois = missing_pois[:LIMIT_CHANGES_PER_CHANGESET]
     print(f'🛟 Limiting to {LIMIT_CHANGES_PER_CHANGESET} POIs')
