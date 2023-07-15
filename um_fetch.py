@@ -15,7 +15,7 @@ _PROJ_TRANSFORMER = Transformer.from_crs('epsg:2178', 'wgs84')
 
 
 @retry(wait=wait_exponential(), stop=stop_after_attempt(5))
-def _fetch_data(theme: str) -> dict:
+def _fetch_data(theme: str) -> list[dict]:
     with get_http_client() as http:
         r = http.post('https://mapa.um.warszawa.pl/mapviewer/foi', data={
             'request': 'getfoi',
@@ -28,7 +28,9 @@ def _fetch_data(theme: str) -> dict:
         })
         r.raise_for_status()
 
-    return hjson.loads(r.text)
+    result = hjson.loads(r.text)['foiarray']
+    assert result, 'No data returned'
+    return result
 
 
 def _parse_details(details: str) -> tuple[str, str, str]:
@@ -64,7 +66,7 @@ def _guess_category(name: str) -> str:
 def um_fetch_restaurants() -> Sequence[UmPoi]:
     data = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO')
     data_a = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO_A')
-    foiarray = chain(data['foiarray'], data_a['foiarray'])
+    foiarray = chain(data, data_a)
 
     pois: dict[str, UmPoi] = {}
 
