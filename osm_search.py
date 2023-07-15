@@ -70,6 +70,9 @@ class OsmSearch:
         assert 1 <= pass_ <= 2
         search_score_threshold = OSM_SEARCH_SCORE_THRESHOLD_1 if pass_ == 1 else OSM_SEARCH_SCORE_THRESHOLD_2
 
+        if not um_pois:
+            return ()
+
         indices, distances = self.tree.query_radius(
             tuple(radians_tuple((p.lat, p.lng)) for p in um_pois),
             r=OSM_SEARCH_RADIUS_0 / EARTH_RADIUS,
