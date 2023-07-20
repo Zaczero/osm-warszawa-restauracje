@@ -19,6 +19,10 @@
 
 ## Reference
 
+### Community discussion
+
+https://community.openstreetmap.org/t/warszawa-import-restauracji-z-mapa-um-warszawa-pl/97607/
+
 ### Data usage terms
 
 https://mapa.um.warszawa.pl/warunki.html
