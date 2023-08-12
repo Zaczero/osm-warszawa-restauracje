@@ -109,6 +109,7 @@ DEFAULT_CHANGESET_TAGS = {
     'import': 'yes',
     'source': 'mapa.um.warszawa.pl',
     'website': WEBSITE,
+    'website:import': 'https://wiki.openstreetmap.org/wiki/Restaurants_import_in_Warsaw',
 }
 
 OSM_SEARCH_RADIUS_1 = 200  # meters
