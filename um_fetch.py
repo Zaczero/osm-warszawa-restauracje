@@ -14,7 +14,7 @@ _GUESS_CATEGORY_CHOICES = tuple(chain(UM_GUESS_CATEGORY, UM_VALID_CATEGORIES))
 _PROJ_TRANSFORMER = Transformer.from_crs('epsg:2178', 'wgs84')
 
 
-@retry(wait=wait_exponential(), stop=stop_after_attempt(5))
+@retry(wait=wait_exponential(), stop=stop_after_attempt(8))
 def _fetch_data(theme: str) -> list[dict]:
     with get_http_client() as http:
         r = http.post('https://mapa.um.warszawa.pl/mapviewer/foi', data={
