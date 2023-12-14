@@ -10,7 +10,7 @@ class UmPoi(NamedTuple):
     name: str
     address: str
     lat: float
-    lng: float
+    lon: float
 
     def get_osm_category_tags(self) -> dict[str, str]:
         try:

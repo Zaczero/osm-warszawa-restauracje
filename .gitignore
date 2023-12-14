@@ -285,6 +285,9 @@ poetry.toml
 # ruff
 .ruff_cache/
 
+# LSP config files
+pyrightconfig.json
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -303,6 +306,8 @@ poetry.toml
 # Ignore all local history of files
 .history
 .ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/dotenv,python,pycharm,visualstudiocode
 
 cache/*
 data/*

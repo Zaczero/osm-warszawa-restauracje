@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from config import OVERPASS_API_INTERPRETER
 from utils import get_http_client

@@ -1,4 +1,4 @@
-from typing import Iterable
+from collections.abc import Iterable
 
 import xmltodict
 
@@ -14,7 +14,7 @@ def _initialize_osm_change_structure() -> dict:
             '@generator': CREATED_BY,
             'create': {
                 'node': [],
-            }
+            },
         }
     }
 
@@ -29,11 +29,14 @@ def create_pois(pois: Iterable[UmPoi]) -> str:
             '@changeset': CHANGESET_ID_PLACEHOLDER,
             '@version': 1,
             '@lat': p.lat,
-            '@lon': p.lng,
+            '@lon': p.lon,
             'tag': [
-                {'@k': k, '@v': v}
+                {
+                    '@k': k,
+                    '@v': v,
+                }
                 for k, v in (DEFAULT_POI_TAGS | p.get_osm_category_tags()).items()
-            ]
+            ],
         }
 
         if name := beautify_name(p.name):

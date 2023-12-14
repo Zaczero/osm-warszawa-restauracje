@@ -29,7 +29,7 @@ def main():
 
     missing_pois: list[UmPoi] = []
 
-    for um_poi, osm_match in zip(um_pois, osm_matches):
+    for um_poi, osm_match in zip(um_pois, osm_matches, strict=True):
         um_poi_name = beautify_name(um_poi.name)
 
         if not um_poi_name:
@@ -49,7 +49,7 @@ def main():
     with print_run_time('Searching OSM (2nd pass)'):
         osm_matches = osm_search.search(um_pois, pass_=2)
 
-    for um_poi, osm_match in zip(um_pois, osm_matches):
+    for um_poi, osm_match in zip(um_pois, osm_matches, strict=True):
         um_poi_name = beautify_name(um_poi.name)
 
         if not um_poi_name:

@@ -2,10 +2,10 @@ import pickle
 import re
 import time
 from base64 import urlsafe_b64encode
+from collections.abc import Generator
 from contextlib import contextmanager
 from hashlib import blake2b
 from math import radians
-from typing import Generator
 
 import httpx
 
@@ -31,11 +31,17 @@ def print_run_time(message: str | list) -> Generator[None, None, None]:
 
 
 def nice_hash(o: object) -> str:
-    return urlsafe_b64encode(blake2b(
-        repr(o).encode(),
-        digest_size=8,
-        usedforsecurity=False
-    ).digest()).decode().rstrip('=')
+    return (
+        urlsafe_b64encode(
+            blake2b(
+                repr(o).encode(),
+                digest_size=8,
+                usedforsecurity=False,
+            ).digest()
+        )
+        .decode()
+        .rstrip('=')
+    )
 
 
 def file_cache(ttl: float):
@@ -46,7 +52,7 @@ def file_cache(ttl: float):
 
             if cache_file.is_file() and (time.time() - cache_file.stat().st_mtime) < ttl:
                 with cache_file.open('rb') as f:
-                    return pickle.load(f)
+                    return pickle.load(f)  # noqa: S301
 
             result = func(*args, **kwargs)
 
@@ -54,12 +60,14 @@ def file_cache(ttl: float):
                 pickle.dump(result, f)
 
             return result
+
         return wrapped
+
     return wrapper
 
 
-def radians_tuple(latLng: tuple[float, float]) -> tuple[float, float]:
-    return (radians(latLng[0]), radians(latLng[1]))
+def radians_tuple(latlon: tuple[float, float]) -> tuple[float, float]:
+    return (radians(latlon[0]), radians(latlon[1]))
 
 
 def get_http_client(base_url: str = '', *, auth: tuple | None = None, headers: dict | None = None) -> httpx.Client:
@@ -71,10 +79,12 @@ def get_http_client(base_url: str = '', *, auth: tuple | None = None, headers: d
     return httpx.Client(
         base_url=base_url,
         follow_redirects=True,
+        http1=True,
+        http2=True,
         timeout=30,
-        limits=httpx.Limits(max_connections=8, max_keepalive_connections=2, keepalive_expiry=30),
         auth=auth,
-        headers=headers)
+        headers=headers,
+    )
 
 
 def beautify_name(name: str) -> str:
@@ -86,7 +96,7 @@ def beautify_name(name: str) -> str:
         word = m.group()
 
         if word.isupper():
-            name = name[:m.start()] + word.capitalize() + name[m.end():]
+            name = name[: m.start()] + word.capitalize() + name[m.end() :]
 
     # normalize unicode quotes
     name = ''.join(UNICODE_QUOTES.get(c, c) for c in name)

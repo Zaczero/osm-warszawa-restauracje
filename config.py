@@ -2,15 +2,16 @@ import os
 import secrets
 from pathlib import Path
 
-import openai
+from openai import OpenAI
 from tinydb import TinyDB
 
-openai.api_key = os.getenv('OPENAI_KEY')
-assert openai.api_key, 'OpenAI API key not set'
+OPENAI = OpenAI(api_key=os.getenv('OPENAI_KEY'))
 
 OSM_USERNAME = os.getenv('OSM_USERNAME')
 OSM_PASSWORD = os.getenv('OSM_PASSWORD')
-assert OSM_USERNAME and OSM_PASSWORD, 'OSM credentials not set'
+
+if not OSM_USERNAME or not OSM_PASSWORD:
+    raise RuntimeError('OSM credentials not set')
 
 DRY_RUN = os.getenv('DRY_RUN', None) == '1'
 
@@ -19,7 +20,7 @@ if DRY_RUN:
 else:
     print('🔴 PRODUCTION MODE 🔴')
 
-VERSION = '1.2'
+VERSION = '1.2.1'
 CREATED_BY = f'osm-warszawa-restauracje {VERSION}'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
 USER_AGENT = f'osm-warszawa-restauracje/{VERSION} (+{WEBSITE})'
@@ -96,8 +97,8 @@ UM_GUESS_CATEGORY = {
     'zajazd': 'restauracja',
 }
 
-assert not set(UM_CATEGORY_TAGS).intersection(UM_GUESS_CATEGORY), \
-    'UM_CATEGORY_TAGS and UM_GUESS_CATEGORY must be disjoint'
+if set(UM_CATEGORY_TAGS).intersection(UM_GUESS_CATEGORY):
+    raise RuntimeError('UM_CATEGORY_TAGS and UM_GUESS_CATEGORY must be disjoint')
 
 DEFAULT_POI_TAGS = {
     'source': 'mapa.um.warszawa.pl',

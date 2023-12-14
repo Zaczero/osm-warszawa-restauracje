@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 from itertools import chain
-from typing import Sequence
 
 import hjson
 from pyproj import Transformer
@@ -17,19 +17,25 @@ _PROJ_TRANSFORMER = Transformer.from_crs('epsg:2178', 'wgs84')
 @retry(wait=wait_exponential(), stop=stop_after_attempt(8))
 def _fetch_data(theme: str) -> list[dict]:
     with get_http_client() as http:
-        r = http.post('https://mapa.um.warszawa.pl/mapviewer/foi', data={
-            'request': 'getfoi',
-            'version': '1.0',
-            'bbox': '0:0:10000000:10000000',
-            'width': '760',
-            'height': '1190',
-            'theme': theme,
-            'cachefoi': 'yes',
-        })
+        r = http.post(
+            'https://mapa.um.warszawa.pl/mapviewer/foi',
+            data={
+                'request': 'getfoi',
+                'version': '1.0',
+                'bbox': '0:0:10000000:10000000',
+                'width': '760',
+                'height': '1190',
+                'theme': theme,
+                'cachefoi': 'yes',
+            },
+        )
         r.raise_for_status()
 
     result = hjson.loads(r.text)['foiarray']
-    assert result, 'No data returned'
+
+    if not result:
+        raise RuntimeError('No data returned')
+
     return result
 
 
@@ -46,11 +52,14 @@ def _parse_details(details: str) -> tuple[str, str, str]:
 
 
 def _guess_category(name: str) -> str:
-    matches = process.extract(name, _GUESS_CATEGORY_CHOICES,
-                              scorer=fuzz.partial_ratio,
-                              processor=utils.default_process,
-                              limit=3,
-                              score_cutoff=85)
+    matches = process.extract(
+        name,
+        _GUESS_CATEGORY_CHOICES,
+        scorer=fuzz.partial_ratio,
+        processor=utils.default_process,
+        limit=3,
+        score_cutoff=85,
+    )
 
     if not matches:
         return ''
@@ -71,7 +80,7 @@ def um_fetch_restaurants() -> Sequence[UmPoi]:
     pois: dict[str, UmPoi] = {}
 
     for p in foiarray:
-        lat, lng = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
+        lat, lon = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
         um_category, name, address = _parse_details(p['name'])
 
         category = _guess_category(name)
@@ -82,15 +91,15 @@ def um_fetch_restaurants() -> Sequence[UmPoi]:
             category = um_category
             print(f'🏱 Using UM category {category!r} for {name!r}')
 
-        p_id = nice_hash((name, address))
-
-        pois[p_id] = UmPoi(
-            id=p_id,
+        poi_id = nice_hash((name, address))
+        pois[poi_id] = UmPoi(
+            id=poi_id,
             id_um=p['id'],
             category=category,
             name=name,
             address=address,
             lat=lat,
-            lng=lng)
+            lon=lon,
+        )
 
     return tuple(pois.values())

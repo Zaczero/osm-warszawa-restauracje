@@ -6,4 +6,4 @@ class OsmPoi(NamedTuple):
     id: int
     tags: dict[str, str]
     lat: float
-    lng: float
+    lon: float

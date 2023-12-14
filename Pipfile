@@ -4,19 +4,19 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
+brotlipy = "*"
+h2 = "*"
 hjson = "*"
 httpx = "*"
 openai = "*"
 pyproj = "*"
 rapidfuzz = "*"
 scikit-learn = "*"
-scipy = "*"
 tenacity = "*"
 tinydb = "*"
 xmltodict = "*"
 
 [dev-packages]
-autopep8 = "*"
 
 [requires]
 python_version = "3.11"
