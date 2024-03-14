@@ -2,10 +2,10 @@ import os
 import secrets
 from pathlib import Path
 
-from openai import OpenAI
+from mistralai.client import MistralClient
 from tinydb import TinyDB
 
-OPENAI = OpenAI(api_key=os.getenv('OPENAI_KEY'))
+MISTRAL = MistralClient(os.environ['MISTRAL_API_KEY'])
 
 OSM_USERNAME = os.getenv('OSM_USERNAME')
 OSM_PASSWORD = os.getenv('OSM_PASSWORD')
@@ -20,7 +20,7 @@ if DRY_RUN:
 else:
     print('🔴 PRODUCTION MODE 🔴')
 
-VERSION = '1.2.2'
+VERSION = '1.3.0'
 CREATED_BY = f'osm-warszawa-restauracje {VERSION}'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
 USER_AGENT = f'osm-warszawa-restauracje/{VERSION} (+{WEBSITE})'

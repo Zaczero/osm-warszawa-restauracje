@@ -57,7 +57,7 @@ def file_cache(ttl: float):
             result = func(*args, **kwargs)
 
             with cache_file.open('wb') as f:
-                pickle.dump(result, f)
+                pickle.dump(result, f, protocol=pickle.HIGHEST_PROTOCOL)
 
             return result
 

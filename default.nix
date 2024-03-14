@@ -25,8 +25,8 @@ with pkgs; dockerTools.buildLayeredImage {
   extraCommands = ''
     set -e
     mkdir app && cd app
-    cp "${./.}"/*.py .
     mkdir cache data
+    cp "${./.}"/*.py .
     export PATH="${lib.makeBinPath shell.buildInputs}:$PATH"
     ${shell.shellHook}
   '';
@@ -38,7 +38,6 @@ with pkgs; dockerTools.buildLayeredImage {
       "/app/data" = { };
     };
     Env = [
-      "LD_LIBRARY_PATH=${lib.makeLibraryPath shell.buildInputs}"
       "PYTHONPATH=${python-venv}/lib"
       "PYTHONUNBUFFERED=1"
       "PYTHONDONTWRITEBYTECODE=1"
