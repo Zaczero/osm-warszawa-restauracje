@@ -74,15 +74,13 @@ def get_http_client(base_url: str = '', *, headers: dict | None = None) -> httpx
     if not headers:
         headers = {}
 
-    headers['User-Agent'] = USER_AGENT
-
     return httpx.Client(
         base_url=base_url,
+        headers={'User-Agent': USER_AGENT, **headers},
+        timeout=30,
         follow_redirects=True,
         http1=True,
         http2=True,
-        timeout=30,
-        headers=headers,
     )
 
 
