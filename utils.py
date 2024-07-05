@@ -70,7 +70,7 @@ def radians_tuple(latlon: tuple[float, float]) -> tuple[float, float]:
     return (radians(latlon[0]), radians(latlon[1]))
 
 
-def get_http_client(base_url: str = '', *, auth: tuple | None = None, headers: dict | None = None) -> httpx.Client:
+def get_http_client(base_url: str = '', *, headers: dict | None = None) -> httpx.Client:
     if not headers:
         headers = {}
 
@@ -82,7 +82,6 @@ def get_http_client(base_url: str = '', *, auth: tuple | None = None, headers: d
         http1=True,
         http2=True,
         timeout=30,
-        auth=auth,
         headers=headers,
     )
 

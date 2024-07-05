@@ -1,9 +1,7 @@
-{ pkgs ? import <nixpkgs> { }, ... }:
+{ pkgs ? import <nixpkgs> { } }:
 
 let
-  shell = import ./shell.nix {
-    isDevelopment = false;
-  };
+  shell = import ./shell.nix { isDevelopment = false; };
 
   python-venv = pkgs.buildEnv {
     name = "python-venv";
@@ -18,7 +16,6 @@ in
 with pkgs; dockerTools.buildLayeredImage {
   name = "docker.monicz.dev/osm-warszawa-restauracje";
   tag = "latest";
-  maxLayers = 10;
 
   contents = shell.buildInputs ++ [ python-venv ];
 

@@ -27,10 +27,10 @@ def ai_name_convert(pois: Sequence[UmPoi]) -> Sequence[UmPoi]:
         print(f'🤖 [{i + batch_size}/{len(task)}] Querying AI...')
         answer = complete(
             (
-                'You are provided with a list of restaurant names, which are sometimes descriptive. '
-                'These names originate from a Polish data source. '
+                'You are provided with a list of potential restaurant names, which are sometimes descriptive. '
+                'These names originate from a poor quality Polish data source. '
                 "Your task is to extract an own name for each restaurant - if there isn't one, you output nothing. "
-                'The output will be in CSV format, just like the input.'
+                'You output in CSV format, just like the input.'
             ),
             (
                 '1,mała gastronomia\n'

@@ -1,21 +1,15 @@
 import httpx
 import xmltodict
 
-from config import CHANGESET_ID_PLACEHOLDER, DEFAULT_CHANGESET_TAGS, OSM_PASSWORD, OSM_USERNAME
+from config import CHANGESET_ID_PLACEHOLDER, DEFAULT_CHANGESET_TAGS, OSM_TOKEN
 from utils import get_http_client
 
 
 class OpenStreetMap:
-    def __init__(self):
-        self._auth = (OSM_USERNAME, OSM_PASSWORD)
-
     def _get_http_client(self) -> httpx.Client:
-        return get_http_client('https://api.openstreetmap.org/api', auth=self._auth)
+        return get_http_client('https://api.openstreetmap.org/api', headers={'Authorization': f'Bearer {OSM_TOKEN}'})
 
     def get_authorized_user(self) -> dict | None:
-        if self._auth is None:
-            return None
-
         with self._get_http_client() as http:
             r = http.get('/0.6/user/details.json')
             r.raise_for_status()

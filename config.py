@@ -2,17 +2,11 @@ import os
 import secrets
 from pathlib import Path
 
-from mistralai.client import MistralClient
+from openai import OpenAI
 from tinydb import TinyDB
 
-MISTRAL = MistralClient(os.environ['MISTRAL_API_KEY'])
-
-OSM_USERNAME = os.getenv('OSM_USERNAME')
-OSM_PASSWORD = os.getenv('OSM_PASSWORD')
-
-if not OSM_USERNAME or not OSM_PASSWORD:
-    raise RuntimeError('OSM credentials not set')
-
+OPENAI = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+OSM_TOKEN = os.environ['OSM_TOKEN']
 DRY_RUN = os.getenv('DRY_RUN', None) == '1'
 
 if DRY_RUN:
@@ -20,7 +14,7 @@ if DRY_RUN:
 else:
     print('🔴 PRODUCTION MODE 🔴')
 
-VERSION = '1.3.0'
+VERSION = '1.4.0'
 CREATED_BY = f'osm-warszawa-restauracje {VERSION}'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
 USER_AGENT = f'osm-warszawa-restauracje/{VERSION} (+{WEBSITE})'
@@ -123,23 +117,23 @@ OSM_SEARCH_SCORE_THRESHOLD_2 = 0.750
 UNICODE_QUOTES = {
     '\u2018': "'",  # LEFT SINGLE QUOTATION MARK
     '\u2019': "'",  # RIGHT SINGLE QUOTATION MARK
-    '\u201A': "'",  # SINGLE LOW-9 QUOTATION MARK
-    '\u201B': "'",  # SINGLE HIGH-REVERSED-9 QUOTATION MARK
-    '\u201C': '"',  # LEFT DOUBLE QUOTATION MARK
-    '\u201D': '"',  # RIGHT DOUBLE QUOTATION MARK
-    '\u201E': '"',  # DOUBLE LOW-9 QUOTATION MARK
-    '\u201F': '"',  # DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    '\u201a': "'",  # SINGLE LOW-9 QUOTATION MARK
+    '\u201b': "'",  # SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    '\u201c': '"',  # LEFT DOUBLE QUOTATION MARK
+    '\u201d': '"',  # RIGHT DOUBLE QUOTATION MARK
+    '\u201e': '"',  # DOUBLE LOW-9 QUOTATION MARK
+    '\u201f': '"',  # DOUBLE HIGH-REVERSED-9 QUOTATION MARK
     '\u2039': "'",  # SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-    '\u203A': "'",  # SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-    '\u300C': '"',  # LEFT CORNER BRACKET
-    '\u300D': '"',  # RIGHT CORNER BRACKET
-    '\u300E': '"',  # LEFT WHITE CORNER BRACKET
-    '\u300F': '"',  # RIGHT WHITE CORNER BRACKET
-    '\u301D': '"',  # REVERSED DOUBLE PRIME QUOTATION MARK
-    '\u301E': '"',  # DOUBLE PRIME QUOTATION MARK
-    '\u301F': '"',  # LOW DOUBLE PRIME QUOTATION MARK
-    '\uFF02': '"',  # FULLWIDTH QUOTATION MARK
-    '\uFF07': "'",  # FULLWIDTH APOSTROPHE
+    '\u203a': "'",  # SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+    '\u300c': '"',  # LEFT CORNER BRACKET
+    '\u300d': '"',  # RIGHT CORNER BRACKET
+    '\u300e': '"',  # LEFT WHITE CORNER BRACKET
+    '\u300f': '"',  # RIGHT WHITE CORNER BRACKET
+    '\u301d': '"',  # REVERSED DOUBLE PRIME QUOTATION MARK
+    '\u301e': '"',  # DOUBLE PRIME QUOTATION MARK
+    '\u301f': '"',  # LOW DOUBLE PRIME QUOTATION MARK
+    '\uff02': '"',  # FULLWIDTH QUOTATION MARK
+    '\uff07': "'",  # FULLWIDTH APOSTROPHE
 }
 
 CHANGESET_ID_PLACEHOLDER = f'__CHANGESET_ID_PLACEHOLDER__{secrets.token_urlsafe(8)}__'

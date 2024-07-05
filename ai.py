@@ -1,20 +1,26 @@
 import traceback
+from collections.abc import Iterable
 from pprint import pprint
 
-from mistralai.models.chat_completion import ChatMessage
+from openai.types.chat import (
+    ChatCompletionAssistantMessageParam,
+    ChatCompletionMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
+)
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from config import MISTRAL
+from config import OPENAI
 from utils import file_cache
 
 
 @file_cache(ttl=float('inf'))
 @retry(wait=wait_exponential(), stop=stop_after_attempt(5))
-def _complete(messages: list[ChatMessage]) -> str:
+def _complete(messages: Iterable[ChatCompletionMessageParam]) -> str:
     try:
-        completion = MISTRAL.chat(
-            messages,
-            model='open-mixtral-8x7b',
+        completion = OPENAI.chat.completions.create(
+            messages=messages,
+            model='gpt-4o',
             temperature=0,
             max_tokens=1024,
         )
@@ -33,10 +39,16 @@ def complete(system: str, *conversation: str) -> str:
     if len(conversation) % 2 == 0:
         raise ValueError('Conversation must be of odd length')
 
-    messages = [ChatMessage(role='system', content=system)]
-
-    for i, message in enumerate(conversation):
-        role = 'user' if i % 2 == 0 else 'assistant'
-        messages.append(ChatMessage(role=role, content=message))
+    messages = (
+        ChatCompletionSystemMessageParam(role='system', content=system),
+        *(
+            (
+                ChatCompletionUserMessageParam(role='user', content=message)
+                if i % 2 == 0
+                else ChatCompletionAssistantMessageParam(role='assistant', content=message)
+            )
+            for i, message in enumerate(conversation)
+        ),
+    )
 
     return _complete(messages).strip()
