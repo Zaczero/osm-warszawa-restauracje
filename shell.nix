@@ -40,7 +40,13 @@ let
     (writeShellScriptBin "docker-build-push" ''
       set -e
       if command -v podman &> /dev/null; then docker() { podman "$@"; } fi
-      docker push $(docker load < "$(nix-build --no-out-link)" | sed -n -E 's/Loaded image: (\S+)/\1/p')
+      image_file=$(nix-build --no-out-link)
+      echo "Image file is $image_file"
+      load_out=$(docker load -i "$image_file")
+      echo "Load output is $load_out"
+      image_name=$(sed -n -E 's/Loaded image: (\S+)/\1/p' <<< "$load_out")
+      echo "Image name is $image_name"
+      docker push "$image_name"
     '')
   ];
 
