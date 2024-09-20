@@ -1,25 +1,27 @@
-[tool.poetry]
-authors = ["Your Name <you@example.com>"]
-description = ""
+[project]
+dependencies = [
+  "hjson",
+  "httpx[brotli,zstandard]",
+  "openai",
+  "pyproj",
+  "rapidfuzz",
+  "scikit-learn",
+  "scipy",
+  "tenacity",
+  "tinydb",
+  "xmltodict",
+]
 name = "osm-warszawa-restauracje"
+requires-python = "~=3.12"
 version = "0.0.0"
 
-[tool.poetry.dependencies]
-hjson = "^3.1.0"
-httpx = {extras = ["brotli", "http2"], version = "<1"}
-openai = "^1.35.10"
-pyproj = "^3.6.1"
-python = "^3.12"
-rapidfuzz = "^3.6.1"
-scikit-learn = "^1.3.2"
-scipy = "^1.11.4"
-tenacity = "^8.2.3"
-tinydb = "^4.8.0"
-xmltodict = "<1"
+[tool.uv]
+package = false
+python-downloads = "never"
+python-preference = "only-system"
 
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core"]
+[tool.setuptools]
+packages = ["."]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -55,41 +57,41 @@ target-version = "py312"
 ignore = []
 select = [
   # see https://docs.astral.sh/ruff/rules/ for rules documentation
-  "A", # flake8-builtins
-  "ARG", # flake8-unused-arguments
+  "A",     # flake8-builtins
+  "ARG",   # flake8-unused-arguments
   "ASYNC", # flake8-async
-  "B", # flake8-bugbear
+  "B",     # flake8-bugbear
   # "COM", # flake8-commas
   "C4", # flake8-comprehensions
   "E4", # pycodestyle
   "E7",
   "E9",
-  "F", # pyflakes
+  "F",  # pyflakes
   # "FBT", # flake8-boolean-trap
   "FLY", # flynt
   # "FURB", # refurb (preview)
-  "G", # flake8-logging-format
-  "I", # isort
+  "G",   # flake8-logging-format
+  "I",   # isort
   "INT", # flake8-gettext
   # "LOG", # flake8-logging (preview)
-  "N", # pep8-naming
-  "NPY", # numpy
-  "UP", # pyupgrade
-  "Q", # flake8-quotes
+  "N",    # pep8-naming
+  "NPY",  # numpy
   "PERF", # perflint
-  "PGH", # pygrep-hooks
-  "PIE", # flake8-pie
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "Q",    # flake8-quotes
+  "UP",   # pyupgrade
   # "PL", # pylint
-  "PT", # flake8-pytest-style
-  "PTH", # flake8-use-pathlib
-  "PYI", # flake8-pyi
-  "RSE", # flake8-raise
-  "RUF", # ruff
-  "S", # flake8-bandit
-  "SIM", # flake8-simplify
-  "SLF", # flake8-self
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "PYI",  # flake8-pyi
+  "RSE",  # flake8-raise
+  "RUF",  # ruff
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
   "SLOT", # flake8-slots
-  "T10", # flake8-debugger
+  "T10",  # flake8-debugger
   # "T20", # flake8-print
   # "TRY", # tryceratops
   "YTT", # flake8-2020

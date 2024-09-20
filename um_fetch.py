@@ -40,18 +40,18 @@ def _fetch_data(theme: str) -> list[dict]:
 
 
 def _parse_details(details: str) -> tuple[str, str, str]:
-    kv_map = {}
+    kv_map: dict[str, str] = {}
 
-    for line in details.split('\n'):
-        parts = line.split(':', maxsplit=1)
-        key = parts[0].strip()
-        value = parts[1].strip()
-        kv_map[key] = value
+    for line in details.splitlines():
+        key, _, value = line.partition(':')
+        key, value = key.strip(), value.strip()
+        if key and value:
+            kv_map[key] = value
 
-    return kv_map['Rodzaj punktu'], kv_map['Nazwa punktu'], kv_map['Adres']
+    return kv_map.get('Rodzaj punktu', ''), kv_map['Nazwa punktu'], kv_map['Adres']
 
 
-def _guess_category(name: str) -> str:
+def _guess_category(name: str) -> str | None:
     matches = process.extract(
         name,
         _GUESS_CATEGORY_CHOICES,
@@ -62,7 +62,7 @@ def _guess_category(name: str) -> str:
     )
 
     if not matches:
-        return ''
+        return None
 
     if len(matches) == 1:
         match = matches[0][0]
@@ -75,22 +75,22 @@ def _guess_category(name: str) -> str:
 def um_fetch_restaurants() -> Sequence[UmPoi]:
     data = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO')
     data_a = _fetch_data('dane_wawa.ZEZWOLENIA_ALKOHOLOWE_GASTRO_A')
-    foiarray = chain(data, data_a)
-
     pois: dict[str, UmPoi] = {}
 
-    for p in foiarray:
-        lat, lon = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
-        um_category, name, address = _parse_details(p['name'])
+    for p in chain(data, data_a):
+        try:
+            um_category, name, address = _parse_details(p['name'])
+        except KeyError:
+            continue
 
         category = _guess_category(name)
-
         if category:
             print(f'🧩 Guessed category {category!r} for {name!r}')
         if not category:
             category = um_category
             print(f'🏱 Using UM category {category!r} for {name!r}')
 
+        lat, lon = _PROJ_TRANSFORMER.transform(p['y'], p['x'])
         poi_id = nice_hash((name, address))
         pois[poi_id] = UmPoi(
             id=poi_id,

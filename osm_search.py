@@ -83,7 +83,6 @@ class OsmSearch:
                 )
             )
 
-        self.pois = tuple(self.pois)
         self.tree = BallTree(tuple(radians_tuple((p.lat, p.lon)) for p in self.pois), metric='haversine')
 
     def search(self, um_pois: Sequence[UmPoi], pass_: int) -> Sequence[OsmPoi | None]:

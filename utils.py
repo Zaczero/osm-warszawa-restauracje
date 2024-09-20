@@ -67,7 +67,7 @@ def file_cache(ttl: float):
 
 
 def radians_tuple(latlon: tuple[float, float]) -> tuple[float, float]:
-    return (radians(latlon[0]), radians(latlon[1]))
+    return radians(latlon[0]), radians(latlon[1])
 
 
 def get_http_client(base_url: str = '', *, headers: dict | None = None) -> httpx.Client:
@@ -79,8 +79,6 @@ def get_http_client(base_url: str = '', *, headers: dict | None = None) -> httpx
         headers={'User-Agent': USER_AGENT, **headers},
         timeout=30,
         follow_redirects=True,
-        http1=True,
-        http2=True,
     )
 
 
