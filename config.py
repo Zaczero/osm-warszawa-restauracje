@@ -14,7 +14,7 @@ if DRY_RUN:
 else:
     print('🔴 PRODUCTION MODE 🔴')
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 CREATED_BY = f'osm-warszawa-restauracje {VERSION}'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
 USER_AGENT = f'osm-warszawa-restauracje/{VERSION} (+{WEBSITE})'
@@ -48,6 +48,7 @@ UM_CATEGORY_TAGS = {
     'chińska': {'amenity': 'restaurant', 'cuisine': 'chinese'},
     'cukiernia': {'shop': 'confectionery'},
     'grecka': {'amenity': 'restaurant', 'cuisine': 'greek'},
+    'grill': {'amenity': 'restaurant', 'cuisine': 'grill'},
     'indyjska': {'amenity': 'restaurant', 'cuisine': 'indian'},
     'japońska': {'amenity': 'restaurant', 'cuisine': 'japanese'},
     'kawiarnia': {'amenity': 'cafe'},
@@ -76,14 +77,20 @@ UM_GUESS_CATEGORY = {
     'burger': 'burgerownia',
     'cafe': 'kawiarnia',
     'caffe': 'kawiarnia',
+    'coffe': 'kawiarnia',
+    'coffee': 'kawiarnia',
     'ciastkarnia': 'cukiernia',
     'club': 'klub',
     'curry': 'restauracja',
     'gastro': 'restauracja',
+    'karczma': 'restauracja',
+    'kawa': 'kawiarnia',
+    'kawy': 'kawiarnia',
     'lody': 'lodziarnia',
     'naleśnikarnia': 'cukiernia',
     'pho': 'restauracja',
     'pierogi': 'pierogarnia',
+    'piwa': 'piwiarnia',
     'piwo': 'piwiarnia',
     'piwny': 'piwiarnia',
     'pizza': 'pizzeria',
