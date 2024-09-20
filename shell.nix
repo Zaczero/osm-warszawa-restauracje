@@ -1,4 +1,4 @@
-{ isDevelopment ? true }:
+{}:
 
 let
   # Update packages with `nixpkgs-update` command
@@ -22,11 +22,6 @@ let
     uv
     ruff
 
-    # Scripts
-    # -- Misc
-    (writeShellScriptBin "make-version" ''
-      sed -i -E "s|VERSION = '([0-9.]+)'|VERSION = '\1.$(date +%y%m%d)'|g" config.py
-    '')
     (writeShellScriptBin "nixpkgs-update" ''
       set -e
       hash=$(
@@ -37,14 +32,9 @@ let
       sed -i -E "s|/nixpkgs/archive/[0-9a-f]{40}\.tar\.gz|/nixpkgs/archive/$hash.tar.gz|" shell.nix
       echo "Nixpkgs updated to $hash"
     '')
-    (writeShellScriptBin "docker-build-push" ''
-      set -e
-      if command -v podman &> /dev/null; then docker() { podman "$@"; } fi
-      docker push $(docker load -i "$(nix-build --no-out-link)" | sed -n -E 's/Loaded image\S+: (\S+)/\1/p')
-    '')
   ];
 
-  shell' = with pkgs; lib.optionalString isDevelopment ''
+  shell' = ''
     current_python=$(readlink -e .venv/bin/python || echo "")
     current_python=''${current_python%/bin/*}
     [ "$current_python" != "${python'}" ] && rm -rf .venv/
@@ -68,8 +58,6 @@ let
     else
       echo "Skipped loading .env file (not found)"
     fi
-  '' + lib.optionalString (!isDevelopment) ''
-    make-version
   '';
 in
 pkgs.mkShellNoCC {

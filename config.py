@@ -14,7 +14,7 @@ if DRY_RUN:
 else:
     print('🔴 PRODUCTION MODE 🔴')
 
-VERSION = '1.5.1'
+VERSION = '1.5.2'
 CREATED_BY = f'osm-warszawa-restauracje {VERSION}'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
 USER_AGENT = f'osm-warszawa-restauracje/{VERSION} (+{WEBSITE})'
