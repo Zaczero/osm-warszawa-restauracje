@@ -28,4 +28,4 @@ jobs:
 
       - name: Build and push
         run: |
-          nix-shell --pure --run docker-build-push
+          nix-shell --run docker-build-push
