@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: docker.monicz.dev
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASS }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-24.05-darwin
+
+      - name: Build and push
+        run: |
+          nix-shell --pure --run docker-build-push
