@@ -33,6 +33,7 @@ def main():
         um_poi_name = beautify_name(um_poi.name)
 
         if not um_poi_name:
+            mark_added((um_poi,), reason='empty_name')
             continue
 
         if osm_match is None:
