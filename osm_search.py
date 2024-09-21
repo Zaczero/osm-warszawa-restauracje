@@ -105,6 +105,7 @@ class OsmSearch:
 
         for um_poi, i_distances, i_indices in zip(um_pois, distances, indices, strict=True):
             if len(i_indices) == 0:  # skip if no results
+                result.append(None)
                 continue
 
             um_poi_name = _normalize_name(um_poi.name)
