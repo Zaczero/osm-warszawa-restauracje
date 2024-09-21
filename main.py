@@ -33,7 +33,7 @@ def main():
         um_poi_name = beautify_name(um_poi.name)
 
         if not um_poi_name:
-            mark_added((um_poi,), reason='empty_name')
+            mark_added((um_poi,), reason='empty_name_1')
             continue
 
         if osm_match is None:
@@ -54,6 +54,7 @@ def main():
         um_poi_name = beautify_name(um_poi.name)
 
         if not um_poi_name:
+            mark_added((um_poi,), reason='empty_name_2')
             continue
 
         if osm_match is None:
