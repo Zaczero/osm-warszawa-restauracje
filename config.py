@@ -104,7 +104,7 @@ DEFAULT_POI_TAGS = {
 }
 
 DEFAULT_CHANGESET_TAGS = {
-    'comment': 'Import restauracji z mapy.um.warszawa.pl',
+    'comment': 'Import restauracji z mapa.um.warszawa.pl',
     'created_by': CREATED_BY,
     'import': 'yes',
     'source': 'mapa.um.warszawa.pl',
