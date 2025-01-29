@@ -3,16 +3,11 @@ import secrets
 from pathlib import Path
 
 from openai import OpenAI
-from tinydb import TinyDB
 
 OPENAI = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 OSM_TOKEN = os.environ['OSM_TOKEN']
 DRY_RUN = os.getenv('DRY_RUN', None) == '1'
-
-if DRY_RUN:
-    print('🦺 TEST MODE 🦺')
-else:
-    print('🔴 PRODUCTION MODE 🔴')
+print('🦺 TEST MODE 🦺' if DRY_RUN else '🔴 PRODUCTION MODE 🔴')
 
 CREATED_BY = 'osm-warszawa-restauracje'
 WEBSITE = 'https://github.com/Zaczero/osm-warszawa-restauracje'
@@ -23,11 +18,13 @@ CACHE_DIR.mkdir(exist_ok=True)
 
 DATA_DIR = Path('data')
 DATA_DIR.mkdir(exist_ok=True)
-DB = TinyDB(DATA_DIR / 'db.json')
+DB_PATH = DATA_DIR / 'db.parquet'
 
 # Dedicated instance unavailable? Pick one from the public list:
 # https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances
-OVERPASS_API_INTERPRETER = os.getenv('OVERPASS_API_INTERPRETER', 'https://overpass.monicz.dev/api/interpreter')
+OVERPASS_API_INTERPRETER = os.getenv(
+    'OVERPASS_API_INTERPRETER', 'https://overpass.monicz.dev/api/interpreter'
+)
 
 EARTH_RADIUS = 6371000
 

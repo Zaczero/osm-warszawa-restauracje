@@ -18,19 +18,7 @@ class OpenStreetMap:
 
     def upload_osm_change(self, osm_change: str) -> None:
         changeset = xmltodict.unparse(
-            {
-                'osm': {
-                    'changeset': {
-                        'tag': [
-                            {
-                                '@k': k,
-                                '@v': v,
-                            }
-                            for k, v in DEFAULT_CHANGESET_TAGS.items()
-                        ]
-                    }
-                }
-            }
+            {'osm': {'changeset': {'tag': [{'@k': k, '@v': v} for k, v in DEFAULT_CHANGESET_TAGS.items()]}}}
         )
 
         with self._get_http_client() as http:

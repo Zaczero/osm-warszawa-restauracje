@@ -13,7 +13,7 @@ from config import CACHE_DIR, UNICODE_QUOTES, USER_AGENT
 
 
 @contextmanager
-def print_run_time(message: str | list) -> Generator[None, None, None]:
+def print_run_time(message: str | list) -> Generator[None]:
     print(f'[⏱️] {message}...')
     start_time = time.perf_counter()
 
@@ -82,7 +82,7 @@ def get_http_client(base_url: str = '', *, headers: dict | None = None) -> httpx
     )
 
 
-def beautify_name(name: str) -> str:
+def beautify_name(name: str | None) -> str:
     if not name:
         return ''
 
