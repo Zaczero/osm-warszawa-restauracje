@@ -20,10 +20,8 @@ DATA_DIR = Path('data')
 DATA_DIR.mkdir(exist_ok=True)
 DB_PATH = DATA_DIR / 'db.parquet'
 
-# Dedicated instance unavailable? Pick one from the public list:
-# https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances
 OVERPASS_API_INTERPRETER = os.getenv(
-    'OVERPASS_API_INTERPRETER', 'https://overpass.monicz.dev/api/interpreter'
+    'OVERPASS_API_INTERPRETER', 'https://overpass-api.de/api/interpreter'
 )
 
 EARTH_RADIUS = 6371000
